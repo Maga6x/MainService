@@ -6,13 +6,13 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "CHAPTERS")
+@Table(name = "LESSONS")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Chapter {
+public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +29,8 @@ public class Chapter {
     private Integer orderNum;
 
     @ManyToOne
-    @JoinColumn(name = "COURSES_ENGLISH_ID", nullable = false)
-    private CourseEnglish courseEnglish;
+    @JoinColumn(name = "CHAPTERS_ID", nullable = false)
+    private Chapter chapter;
 
     @Column(name = "CREATED_TIME")
     private LocalDateTime createdTime;
