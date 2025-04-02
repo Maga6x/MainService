@@ -29,8 +29,8 @@ public class Chapter {
     private Integer orderNum;
 
     @ManyToOne
-    @JoinColumn(name = "COURSES_ENGLISH_ID", nullable = false)
-    private CourseEnglish courseEnglish;
+    @JoinColumn(name = "COURSES_ID", nullable = false)
+    private Course courseEnglish;
 
     @Column(name = "CREATED_TIME")
     private LocalDateTime createdTime;
