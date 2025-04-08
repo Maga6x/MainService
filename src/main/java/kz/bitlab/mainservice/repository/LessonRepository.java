@@ -1,6 +1,6 @@
 package kz.bitlab.mainservice.repository;
 
-import jakarta.persistence.Entity;
+
 import kz.bitlab.mainservice.entity.Lesson;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

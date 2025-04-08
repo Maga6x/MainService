@@ -1,0 +1,28 @@
+services:
+  backend:
+    image: 'mainservice'
+    container_name: back
+    depends_on:
+      - database
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=qwerty
+    ports:
+      - "8000:8000"
+
+  database:
+    image: 'postgres'
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_DB=postgres
+    ports:
+      - "4567:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Привязываем volume к БД
+
+volumes:
+  postgres_data:  # Объявляем volume
