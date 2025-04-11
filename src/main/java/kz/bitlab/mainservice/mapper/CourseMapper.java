@@ -1,5 +1,6 @@
 package kz.bitlab.mainservice.mapper;
 
+import kz.bitlab.mainservice.dto.CourseRequest;
 import kz.bitlab.mainservice.dto.CourseResponse;
 import kz.bitlab.mainservice.entity.Course;
 import org.mapstruct.Builder;
@@ -17,7 +18,7 @@ public interface CourseMapper {
 
     Course toEntity(CourseResponse dto);
 
-//    Course toEntity(CourseRequest dto);
+    Course toEntity(CourseRequest dto);
 
-    List<CourseResponse> toDtoList(List<Course> recipes);
+    List<CourseResponse> toDtoList(List<Course> courses);
 }

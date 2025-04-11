@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kz.bitlab.mainservice.dto.CourseRequest;
 import kz.bitlab.mainservice.dto.CourseResponse;
 import kz.bitlab.mainservice.exception.EntityNotFoundException;
+import kz.bitlab.mainservice.exception.EntityUniqueException;
 import kz.bitlab.mainservice.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +64,60 @@ public class CourseController {
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping
+    @Operation(summary = "Добавление курса", description = "Добавляет курса проверив на корректность")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Неверный запрос"),
+            @ApiResponse(responseCode = "201", description = "Курс успешно создан")
+    })
+    public ResponseEntity<Void> createCourse(@RequestBody CourseRequest request){
+        try {
+            courseService.createCourse(request);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }catch (EntityUniqueException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Error while creating course {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PutMapping
+    @Operation(summary = "Изменение курса", description = "Изменить курс проверив на уникальность")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Неверный запрос"),
+            @ApiResponse(responseCode = "404", description = "Курс не найден"),
+            @ApiResponse(responseCode = "200", description = "Курс успешно изменен")
+    })
+    public ResponseEntity<Void> editCourse(@RequestBody CourseResponse response) {
+        try{
+            courseService.editCourse(response);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (jakarta.persistence.EntityNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (EntityUniqueException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Удаление курса по ID", description = "Удалить курс по ID проверив на наличие")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Курс не найден"),
+            @ApiResponse(responseCode = "204", description = "Курс успешно удален")
+    })
+    public ResponseEntity<Void> deleteCourse(@PathVariable Long id){
+        try {
+            courseService.deleteCourseById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
