@@ -29,7 +29,7 @@ public class Lesson {
     private Integer orderNum;
 
     @ManyToOne
-    @JoinColumn(name = "CHAPTERS_ID", nullable = false)
+    @JoinColumn(name = "CHAPTER_ID", nullable = false)
     private Chapter chapter;
 
     @Column(name = "CREATED_TIME")

@@ -30,4 +30,6 @@ public class Course {
 
     @Column(name = "UPDATED_TIME")
     private LocalDateTime updatedTime;
+
+
 }

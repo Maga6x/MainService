@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kz.bitlab.mainservice.dto.ChapterRequest;
 import kz.bitlab.mainservice.dto.ChapterResponse;
-import kz.bitlab.mainservice.exception.EntityNotFoundException;
-import kz.bitlab.mainservice.exception.EntityUniqueException;
 import kz.bitlab.mainservice.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,72 +28,50 @@ public class ChapterController {
     private final ChapterService chapterService;
 
     @GetMapping
-    @Operation(summary = "Получение списка глав", description = "Возвращает списка всех глав")
+    @Operation(summary = "Получение списка глав", description = "Возвращает список всех глав")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "500", description = "Ошибка при получении главы"),
-            @ApiResponse(responseCode = "200", description = "Глава успешно получен", content = {
+            @ApiResponse(responseCode = "200", description = "Главы успешно получены", content = {
                     @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ChapterResponse.class))
-            })
+            }),
+            @ApiResponse(responseCode = "500", description = "Ошибка при получении глав")
     })
     public ResponseEntity<List<ChapterResponse>> getChapters() {
-        try {
-            List<ChapterResponse> chapter = chapterService.getChapter();
-            return ResponseEntity.ok(chapter);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<ChapterResponse> chapters = chapterService.getChapter();
+        return ResponseEntity.ok(chapters);
     }
+
     @GetMapping("/{id}")
     @Operation(summary = "Получение главы по ID", description = "Возвращает главу или ошибку")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Глава не найдена"),
             @ApiResponse(responseCode = "200", description = "Глава успешно найдена", content = {
                     @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ChapterResponse.class))
-            })
+            }),
+            @ApiResponse(responseCode = "404", description = "Глава не найдена")
     })
     public ResponseEntity<ChapterResponse> getChapterById(@PathVariable Long id) {
-        try {
-            ChapterResponse chapter = chapterService.getChapterById(id);
-            return ResponseEntity.ok(chapter);
-        }catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        ChapterResponse chapter = chapterService.getChapterById(id);
+        return ResponseEntity.ok(chapter);
     }
 
     @PostMapping
-    @Operation(summary = "Добавление Главы", description = "Добавляет главы проверив на корректность")
+    @Operation(summary = "Добавление главы", description = "Добавляет главу с проверкой на корректность")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "400", description = "Неверный запрос"),
-            @ApiResponse(responseCode = "201", description = "Глава успешно создана")
+            @ApiResponse(responseCode = "201", description = "Глава успешно создана"),
+            @ApiResponse(responseCode = "400", description = "Неверный запрос")
     })
     public ResponseEntity<Void> createChapter(@RequestBody ChapterRequest request) {
-        try {
-            chapterService.createChapter(request);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        }catch (EntityUniqueException e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            log.error("Error while creating chapter {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        chapterService.createChapter(request);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Удаление главы по ID", description = "Удалить главы по ID проверив на наличие")
+    @Operation(summary = "Удаление главы по ID", description = "Удаляет главу по ID с проверкой наличия")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Глава не найдена"),
-            @ApiResponse(responseCode = "204", description = "Глава успешно удалена")
+            @ApiResponse(responseCode = "204", description = "Глава успешно удалена"),
+            @ApiResponse(responseCode = "404", description = "Глава не найдена")
     })
     public ResponseEntity<Void> deleteChapterById(@PathVariable Long id) {
-        try {
-            chapterService.deleteChapterById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        chapterService.deleteChapterById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
