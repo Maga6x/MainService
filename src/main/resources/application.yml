@@ -1,3 +1,5 @@
+server:
+  port: 8077
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=g130mainserver
@@ -5,3 +7,18 @@ spring:
     password: postgres
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${keycloak.url}/realms/${keycloak.realm}
+
+
+keycloak:
+  url: http://localhost:8000
+  realm: bitlab-realm
+  client: bitlab-user-service-client
+  client-secret: pbVj0h3Bi1MDB8IwddJfCd0SyzSYth6i
+  username: bitlab-admin
+  password: qweqwe
+  grant-type: password

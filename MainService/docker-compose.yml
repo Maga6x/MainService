@@ -9,7 +9,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=qwerty
     ports:
-      - "8000:8000"
+      - "8088:8077"
 
   database:
     image: 'postgres'
@@ -41,6 +41,7 @@ services:
     depends_on:
       - keycloak-db
     environment:
+      - KC_HTTP_RELATIVE_PATH=/
       - KC_DB=postgres
       - KC_DB_URL=jdbc:postgresql://keycloak-db:5432/keycloak
       - KC_DB_USERNAME=keycloak
@@ -49,7 +50,7 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=admin
     command: start-dev
     ports:
-      - "8080:8080"
+      - "8000:8080"
 
 volumes:
   postgres_data:
