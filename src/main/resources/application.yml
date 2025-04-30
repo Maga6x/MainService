@@ -15,7 +15,7 @@ spring:
 
 
 keycloak:
-  url: http://localhost:8000
+  url: http://localhost:8000/auth
   realm: bitlab-realm
   client: bitlab-user-service-client
   client-secret: pbVj0h3Bi1MDB8IwddJfCd0SyzSYth6i
