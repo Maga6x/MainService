@@ -36,8 +36,6 @@ public class KeyCloakService {
 
     public UserRepresentation createUser(UserCreateDto user) {
 
-        RealmResource realmResource = keycloak.realm(realm);
-        UsersResource usersResource = realmResource.users();
         UserRepresentation newUser = new UserRepresentation();
         newUser.setEmail(user.getEmail());
         newUser.setEmailVerified(true);

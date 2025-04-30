@@ -19,6 +19,6 @@ keycloak:
   realm: bitlab-realm
   client: bitlab-user-service-client
   client-secret: pbVj0h3Bi1MDB8IwddJfCd0SyzSYth6i
-  username: bitlab-admin
+  username: bitlab_admin
   password: qweqwe
   grant-type: password
