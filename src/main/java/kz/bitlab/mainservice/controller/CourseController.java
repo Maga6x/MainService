@@ -12,12 +12,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/course")
+@RequestMapping(value = "/api/course")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "CourseController", description = "API для управления курсами")
@@ -26,6 +27,7 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Получение списка курсов", description = "Возвращает список всех курсов")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Курсы успешно получены", content = {

@@ -32,6 +32,7 @@ dependencies {
     implementation("org.springframework.security:spring-security-oauth2-jose")
     testImplementation 'org.springframework.security:spring-security-test'
     implementation("org.keycloak:keycloak-admin-client:24.0.3")
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'

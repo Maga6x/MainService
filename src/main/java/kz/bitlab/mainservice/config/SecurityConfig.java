@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -13,27 +14,35 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/user/create").permitAll()
-                                .requestMatchers("/user/auth").permitAll()
-                                .anyRequest().authenticated()
+                        .requestMatchers("/user/sign-in", "/user/create", "/user/change-password").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/teacher/**").hasRole("TEACHER")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN", "TEACHER")
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(
                         session -> session
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .oauth2ResourceServer(o->o
-                        .jwt(Customizer.withDefaults())
+                .oauth2ResourceServer(
+                        oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakRoleConverter()))
                 );
 
-        return httpSecurity.build();
+        return http.build();
+    }
+
+    @Bean
+    public KeycloakRoleConverter keycloakRoleConverter() {
+        return new KeycloakRoleConverter();
     }
 }
