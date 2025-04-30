@@ -10,11 +10,9 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class UserCreateDto {
+public class UserSignInDto {
 
-    private String email;
     private String username;
-    private String firstName;
-    private String lastName;
     private String password;
+
 }
