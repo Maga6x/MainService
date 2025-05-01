@@ -1,10 +1,7 @@
 package kz.bitlab.mainservice.controller;
 
-import kz.bitlab.mainservice.dto.TokenResponseDto;
-import kz.bitlab.mainservice.dto.UserChangePasswordDto;
-import kz.bitlab.mainservice.dto.UserCreateDto;
-import kz.bitlab.mainservice.dto.UserSignInDto;
-import kz.bitlab.mainservice.service.KeyCloakService;
+import kz.bitlab.mainservice.dto.*;
+import kz.bitlab.mainservice.service.impl.KeyCloakServiceImpl;
 import kz.bitlab.mainservice.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -20,7 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final KeyCloakService keyCloakService;
+    private final KeyCloakServiceImpl keyCloakService;
 
     @PostMapping(value = "/create")
     @PreAuthorize("hasRole('ADMIN')")
@@ -51,5 +48,21 @@ public class UserController {
     public ResponseEntity<TokenResponseDto> refreshToken(@RequestBody Map<String, String> payload) {
         String refreshToken = payload.get("refreshToken");
         return ResponseEntity.ok(keyCloakService.refreshAccessToken(refreshToken));
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<String> updateUser(@RequestBody UserUpdateDto userUpdateDto) {
+        String currentUsername = UserUtils.getCurrentUser();
+        if (currentUsername == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
+
+        try {
+            keyCloakService.updateUser(currentUsername, userUpdateDto);
+            return ResponseEntity.ok("User updated successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }
