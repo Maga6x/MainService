@@ -34,11 +34,13 @@ dependencies {
     implementation("org.keycloak:keycloak-admin-client:24.0.3")
     implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
     compileOnly 'org.projectlombok:lombok'
+    implementation("io.minio:minio:8.5.12")
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.mapstruct:mapstruct:1.6.3'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
+    implementation("commons-codec:commons-codec:1.18.0")
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.mockito:mockito-core:5.16.1'

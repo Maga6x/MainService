@@ -4,6 +4,7 @@ services:
     container_name: back
     depends_on:
       - database
+      - minio-service
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/postgres
       - SPRING_DATASOURCE_USERNAME=postgres
@@ -54,6 +55,34 @@ services:
     ports:
       - "8000:8080"
 
+  minio-service:
+    image: quay.io/minio/minio
+    container_name: minio_service_container
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: Minio_Java_Middle_2024
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+  minio-setup:
+    image: minio/mc
+    depends_on:
+      - minio-service
+    environment:
+      MC_HOST: http://root:Minio_Java_Middle_2024@minio-service:9000
+    entrypoint: >
+      /bin/sh -c "
+      echo Starting Minio setup...;
+      mc alias set minio http://minio-service:9000 root Minio_Java_Middle_2024;
+      mc mb minio/dev-bucket;
+      exit 0;
+      "
+
 volumes:
   postgres_data:
   keycloak_data:
+  minio_data:

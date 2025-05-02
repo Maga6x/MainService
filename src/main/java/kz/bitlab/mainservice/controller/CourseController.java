@@ -26,14 +26,15 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @Operation(summary = "Получение списка курсов", description = "Возвращает список всех курсов")
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Создание курса", description = "Создает новый курс (только для админов)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Курсы успешно получены", content = {
+            @ApiResponse(responseCode = "201", description = "Курс успешно создан", content = {
                     @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = CourseResponse.class))
             }),
-            @ApiResponse(responseCode = "500", description = "Ошибка при получении курсов")
+            @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     public ResponseEntity<List<CourseResponse>> getCourse(
             @RequestParam(required = false) String name,

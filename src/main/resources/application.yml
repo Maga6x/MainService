@@ -5,6 +5,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=g130mainserver
     username: postgres
     password: postgres
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.xml
   security:
@@ -22,3 +26,9 @@ keycloak:
   username: bitlab_admin
   password: qweqwe
   grant-type: password
+
+minio:
+  url: http://localhost:9000
+  user: root
+  password: Minio_Java_Middle_2024
+  bucket: dev-bucket

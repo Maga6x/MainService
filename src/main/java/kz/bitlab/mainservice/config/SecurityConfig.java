@@ -22,17 +22,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/sign-in", "/user/create", "/user/change-password").permitAll()
+                        .requestMatchers("/api/course/**").hasRole("ADMIN")
+                        .requestMatchers("/lesson/**").hasRole("ADMIN")// <-- добавлено
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/teacher/**").hasRole("TEACHER")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN", "TEACHER")
+                        .requestMatchers("/file/upload").hasAnyRole("ADMIN", "TEACHER")
+                        .requestMatchers("/file/download/**").authenticated()
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(
-                        session -> session
+                .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .oauth2ResourceServer(
-                        oauth2 -> oauth2
+                .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakRoleConverter()))
                 );
 
